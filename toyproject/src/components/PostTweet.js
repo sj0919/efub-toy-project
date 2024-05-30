@@ -1,5 +1,6 @@
+import axios from "axios";
 import styled from "styled-components";
-import { useState } from "react";
+
 const Form = styled.form`
   display: flex;
   flex-direction: column;
@@ -37,27 +38,36 @@ const SubmitBtn = styled.button`
     opacity: 0.9;
   }
 `;
-const PostTweet = ({ onInsert }) => {
-  const [tweets, setTweets] = useState("");
-  const onChange = (e) => {
-    setTweets(e.target.value);
-  };
-  const onSubmit = (e) => {
-    onInsert(tweets);
-    setTweets("");
-    e.preventDefault();
-  };
+export const PostTweet = () => {
+  const BASE_URL = process.env.REACT_APP_SERVER_URL;
+  const URL = `${BASE_URL}posts`;
+  async function postTweets(event) {
+    event.preventDefault();
+    const data = {
+      writerAccountId: 1,
+      title: "글1",
+      content: document.querySelector("textarea").value,
+    };
+    try {
+      const response = await axios.post(URL, data);
+      console.log(response);
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+    }
+  }
   return (
-    <Form onSubmit={onSubmit}>
-      <TextArea
-        rows={3}
-        maxLength={180}
-        value={tweets}
-        onChange={onChange}
-        placeholder="글을 작성해주세요"
-      />
-      <SubmitBtn type="submit">POST</SubmitBtn>
-    </Form>
+    <div>
+      <Form onSubmit={postTweets}>
+        <TextArea
+          id="txt"
+          rows={3}
+          maxLength={180}
+          placeholder="글을 작성해주세요"
+        />
+        <SubmitBtn type="submit">POST</SubmitBtn>
+      </Form>
+    </div>
   );
 };
 export default PostTweet;
