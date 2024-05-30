@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useState } from "react";
 const Wrapper = styled.div`
   border: solid 1px black;
   padding: 10px;
@@ -21,13 +22,17 @@ const PostMenu = styled.div`
   }
 `;
 
-const TweetDetail = ({ tweets, onRemove }) => {
-  const { text, id, userName } = tweets;
+const TweetDetail = ({ tweets = {} }) => {
+  const { id, userName, text } = tweets;
+  const [loading, setLoading] = useState(true);
+  if (!tweets || !id || !text || !userName) {
+    return null;
+  }
   return (
     <Wrapper>
-      <div>{userName}</div>
-      <div>{text}</div>
       <PostMenu>
+        <div>{userName}</div>
+        <div>{text}</div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -84,7 +89,7 @@ const TweetDetail = ({ tweets, onRemove }) => {
             d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
           />
         </svg>
-        <Button onClick={() => onRemove(id)}>Delete Post</Button>
+        <Button>Delete Post</Button>
       </PostMenu>
     </Wrapper>
   );
