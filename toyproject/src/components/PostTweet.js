@@ -40,7 +40,6 @@ const SubmitBtn = styled.button`
 `;
 export const PostTweet = () => {
   const BASE_URL = process.env.REACT_APP_SERVER_URL;
-  const URL = `${BASE_URL}posts`;
   async function postTweets(event) {
     event.preventDefault();
     const data = {
@@ -49,7 +48,7 @@ export const PostTweet = () => {
       content: document.querySelector("textarea").value,
     };
     try {
-      const response = await axios.post(URL, data);
+      const response = await axios.post(`${BASE_URL}posts`, data);
       console.log(response);
       window.location.reload();
     } catch (error) {
