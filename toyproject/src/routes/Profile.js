@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import TweetList from "../components/TweetList";
+import axios from "axios";
+import { useEffect, useState } from "react";
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -22,7 +24,7 @@ const ProfileDetails = styled.div`
   font-size: 10px;
   display: flex;
   flex-direction: column;
-  color: grey;
+  color: black;
   margin-bottom: 10px;
   padding-left: 20px;
 `;
@@ -59,20 +61,35 @@ const HlineTop = styled.div`
   width: 100%;
   padding-top: 20px;
 `;
-
 const Profile = () => {
+  const [userInfo, setUserInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const BASE_URL = process.env.REACT_APP_SERVER_URL;
+    async function getUserInfo() {
+      try {
+        setLoading(true);
+        const response = await axios.get(`${BASE_URL}accounts/1`);
+        setUserInfo(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    getUserInfo();
+  }, []);
   return (
     <Wrapper>
       <HlineTop></HlineTop>
       <div style={{ padding: "80px" }}></div>
-      <ProfileImage>
-        <img src="https://www.ewha.ac.kr/_res/ewha/img/admission/img-admi01.gif"></img>
-      </ProfileImage>
+      <ProfileImage></ProfileImage>
       <Name>
-        <h3>이승진</h3>
+        <h3>{userInfo?.nickname}</h3>
       </Name>
-      <ProfileDetails>@efub_4th_toy</ProfileDetails>
-      <ProfileDetails>Joined March 2024</ProfileDetails>
+      <ProfileDetails>{userInfo?.id}</ProfileDetails>
+      <ProfileDetails>{userInfo?.email}</ProfileDetails>
+      <ProfileDetails>{userInfo?.createdDate}</ProfileDetails>
+      <ProfileDetails>{userInfo?.bio}</ProfileDetails>
       <ProfileDetails>0 Follwing 0 Followers</ProfileDetails>
       <MenuBar>
         <Button>
@@ -89,3 +106,4 @@ const Profile = () => {
   );
 };
 export default Profile;
+
